@@ -170,7 +170,7 @@ function App() {
 
     if (window.adsbygoogle) {
       window.adsbygoogle.push({
-        ad_break_test: "on", 
+         
         type: "next",
         name: "level_transition",
         beforeAd: () => { console.log("Ad starting"); }, 
@@ -230,8 +230,8 @@ function App() {
 
     if (window.adsbygoogle) {
       window.adsbygoogle.push({
-        google_ad_client: "ca-pub-0000000000000000",
-        ad_break_test: "on", 
+        google_ad_client: "ca-pub-4173109231628867",
+         
         type: "rewarded",
         name: "get_hint",
         beforeReward: (showAdFn) => showAdFn(),
