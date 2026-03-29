@@ -213,3 +213,63 @@
   align-items: center;
   z-index: 1000;
 }
+
+.game-footer {
+  margin-top: 60px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  padding: 30px;
+  color: var(--text-primary);
+  text-align: left;
+  box-shadow: 0 4px 20px var(--shadow-color);
+}
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+.footer-section {
+  flex: 1;
+  min-width: 250px;
+}
+.footer-section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  color: var(--primary-color);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.footer-section p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.footer-links {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-links a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.footer-links a:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+.footer-copyright {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}

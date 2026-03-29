@@ -313,9 +313,50 @@ function App() {
         </div>
       )}
       
+      <Footer />
       <StickyBanner />
     </div>
   );
 }
+
+const Footer = () => {
+  return (
+    <div className="game-footer">
+      <div className="footer-content">
+        <div className="footer-section">
+          <h3>About Scrambl</h3>
+          <p>
+            Welcome to Scrambl, the ultimate word puzzle adventure! Journey through 1,415 uniquely crafted levels across 25 beautiful countries. 
+            Test your vocabulary, unscramble challenging anagrams, and extract hidden letters to solve the final mystery word of each level. 
+            Whether you are exploring the Australian outback or the historical cities of Europe, Scrambl offers a daily dose of brain-training fun.
+          </p>
+        </div>
+        <div className="footer-section">
+          <h3>How to Play</h3>
+          <p>
+            1. Unscramble the letters in the main puzzle rows to form valid English words.<br/>
+            2. Notice the circled spaces? The letters that land there are your key!<br/>
+            3. Collect all the circled letters from the solved jumbles and unscramble them one last time to answer the country-specific trivia question.<br/>
+            4. Use the "Get Hint" button if you get stuck!
+          </p>
+        </div>
+        <div className="footer-section">
+          <h3>Legal & Privacy</h3>
+          <p>
+            By playing Scrambl, you agree to our Terms of Service and Privacy Policy. We use third-party advertising companies, including Google AdSense, to serve ads when you visit our website. These companies may use aggregated information (not including your name, address, email address or telephone number) about your visits to this and other websites in order to provide advertisements about goods and services of interest to you.
+          </p>
+          <div className="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact Us: support@wordscrambl.com</a>
+          </div>
+        </div>
+      </div>
+      <div className="footer-copyright">
+        © {new Date().getFullYear()} Scrambl Game. All rights reserved.
+      </div>
+    </div>
+  );
+};
 
 export default App;
