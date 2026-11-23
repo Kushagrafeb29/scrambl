@@ -1,362 +1,172 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './App.css';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Routes, Route, useNavigate, Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 import { campaignData } from './campaignData';
+import { initGA, logPageView } from './utils/analytics';
+import { initCrazyGames } from './utils/crazygames';
+import { checkAchievements } from './utils/achievements';
+import { startSession, endSession } from './utils/playerStats';
 
-const StickyBanner = () => {
-  useEffect(() => {
-    const { googletag } = window;
-    googletag?.cmd.push(() => {
-      const adSlot = googletag.defineSlot('/1234567/example_banner', [320, 50], 'div-gpt-ad-banner')
-        ?.addService(googletag.pubads());
-      googletag.enableServices();
-      googletag.display('div-gpt-ad-banner');
-
-      const interval = setInterval(() => {
-        googletag.pubads().refresh([adSlot]);
-      }, 30000);
-
-      return () => clearInterval(interval);
-    });
-  }, []);
-
-  return (
-    <div className="banner-anchor">
-      <div id="div-gpt-ad-banner" style={{ minWidth: '320px', minHeight: '50px' }}></div>
-    </div>
-  );
-};
-
-const JumbleRow = ({ jumbleData, onSolve, isSolved, index }) => {
-  const [guess, setGuess] = useState(new Array(jumbleData.answer.length).fill(''));
-  const inputsRef = useRef([]);
-
-  useEffect(() => {
-    setGuess(new Array(jumbleData.answer.length).fill(''));
-  }, [jumbleData]);
-
-  const handleChange = (val, charIndex) => {
-    if (isSolved) return;
-    const newGuess = [...guess];
-    newGuess[charIndex] = val.toUpperCase();
-    setGuess(newGuess);
-
-    if (val && charIndex < jumbleData.answer.length - 1) {
-      inputsRef.current[charIndex + 1]?.focus();
-    }
-
-    if (newGuess.join('') === jumbleData.answer) {
-      onSolve(index, newGuess.join(''));
-    }
-  };
-
-  const handleKeyDown = (e, charIndex) => {
-    if (e.key === 'Backspace' && !guess[charIndex] && charIndex > 0) {
-      inputsRef.current[charIndex - 1]?.focus();
-    }
-  };
-
-  return (
-    <div className={`jumble-row ${isSolved ? 'solved' : ''} animate-fade`} style={{ animationDelay: `${index * 0.1}s` }}>
-      <div className="jumble-clue">{jumbleData.jumble}</div>
-      <div className="input-group">
-        {jumbleData.answer.split('').map((_, i) => (
-          <div key={i} className={`input-wrapper ${jumbleData.circles.includes(i) ? 'circled' : ''}`}>
-            <input
-              ref={el => inputsRef.current[i] = el}
-              type="text"
-              maxLength="1"
-              value={guess[i]}
-              onChange={(e) => handleChange(e.target.value, i)}
-              onKeyDown={(e) => handleKeyDown(e, i)}
-              disabled={isSolved}
-              className="char-input"
-            />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+// Components
+import IntroAnimation from './components/IntroAnimation';
+import EntryScreen from './components/EntryScreen';
+import AchievementToast from './components/AchievementToast';
+import InstallPrompt from './components/InstallPrompt';
+import AdBanner from './components/AdBanner';
+import { WEB_ADS_ENABLED } from './utils/buildTarget';
+import { Capacitor } from '@capacitor/core';
+import Game from './pages/Game';
+import TimeAttack from './pages/TimeAttack';
+import Leaderboard from './pages/Leaderboard';
+import Achievements from './pages/Achievements';
+import PlayerStats from './pages/PlayerStats';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
+import VerifyEmail from './pages/VerifyEmail';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Terms from './pages/Terms';
+import Shop from './pages/Shop';
+import Settings from './pages/Settings';
+import CountryNav from './pages/CountryNav';
+import Blog from './pages/Blog';
+import DeleteAccount from './pages/DeleteAccount';
 
 function App() {
+  const { currentUser, loading } = useAuth();
+  const [showIntro, setShowIntro] = useState(true);
   const [levelIndex, setLevelIndex] = useState(() => {
     const saved = localStorage.getItem('scrambl_level');
     return saved !== null ? parseInt(saved, 10) : 0;
   });
+  const [achievementQueue, setAchievementQueue] = useState([]);
+  const [currentAchievement, setCurrentAchievement] = useState(null);
 
   const levelData = campaignData[levelIndex];
-  
-  const [solvedJumbles, setSolvedJumbles] = useState([]);
-  const [showMeta, setShowMeta] = useState(false);
-  const [metaGuess, setMetaGuess] = useState([]);
-  const metaInputsRef = useRef([]);
+  const navigate = useNavigate();
+  const location = useLocation();
+  // Adsterra banners only on our own website, never in the app or on CrazyGames/portal builds
+  const isWeb = WEB_ADS_ENABLED && !Capacitor.isNativePlatform();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
-    if (levelData) {
-      setSolvedJumbles(new Array(levelData.puzzle.jumbles.length).fill(null));
-      setMetaGuess(new Array(levelData.puzzle.meta.answer.length).fill(''));
-      setShowMeta(false);
-      
-      const bgUrl = `/bg_${levelData.countryId}.png`;
-      document.body.style.backgroundImage = `url('${bgUrl}')`;
-    }
-  }, [levelData]);
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem('scrambl_level', levelIndex.toString());
-  }, [levelIndex]);
+    initGA();
+    initCrazyGames();
+    startSession();
 
-  const isAllJumblesSolved = solvedJumbles.length > 0 && solvedJumbles.every(s => s !== null);
-  const metaAnswer = levelData?.puzzle?.meta?.answer || '';
-  const isMetaSolved = metaAnswer ? metaGuess.join('') === metaAnswer : false;
-
-  const handleJumbleSolve = (index, word) => {
-    const newSolved = [...solvedJumbles];
-    newSolved[index] = word;
-    setSolvedJumbles(newSolved);
-  };
-
-  useEffect(() => {
-    if (isAllJumblesSolved && !showMeta) {
-      setTimeout(() => setShowMeta(true), 800);
-    }
-  }, [isAllJumblesSolved]);
-
-  const getCircledLetters = () => {
-    let letters = [];
-    levelData.puzzle.jumbles.forEach((j, idx) => {
-      const solvedWord = solvedJumbles[idx];
-      if (solvedWord) {
-        j.circles.forEach(circleIdx => {
-          letters.push(solvedWord[circleIdx]);
-        });
-      }
-    });
-    return letters.sort(() => Math.random() - 0.5);
-  };
-
-  const handleMetaChange = (val, i) => {
-    if (isMetaSolved) return;
-    const newGuess = [...metaGuess];
-    newGuess[i] = val.toUpperCase();
-    setMetaGuess(newGuess);
-
-    if (val && i < levelData.puzzle.meta.answer.length - 1) {
-      metaInputsRef.current[i + 1]?.focus();
-    }
-  };
-
-  const handleMetaKeyDown = (e, charIndex) => {
-    if (e.key === 'Backspace' && !metaGuess[charIndex] && charIndex > 0) {
-      metaInputsRef.current[charIndex - 1]?.focus();
-    }
-  };
-
-  const showInterstitialAd = (callback) => {
-    let adCalled = false;
-    const safeCallback = () => {
-      if (!adCalled) {
-        adCalled = true;
-        callback();
-      }
+    // End session tracking on page unload
+    const handleUnload = () => endSession();
+    window.addEventListener('beforeunload', handleUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+      endSession();
     };
+  }, []);
 
-    const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    if (isDev) {
-      console.log("Dev Mode: Simulated Interstitial Ad shown");
-      setTimeout(safeCallback, 800);
-      return;
-    }
+  useEffect(() => {
+    logPageView(location.pathname);
+  }, [location]);
 
-    if (window.adsbygoogle) {
-      window.adsbygoogle.push({
-         
-        type: "next",
-        name: "level_transition",
-        beforeAd: () => { console.log("Ad starting"); }, 
-        afterAd: () => safeCallback(),
-        adDismissed: () => safeCallback()
-      });
-      // Fallback timeout in case ad blocked
-      setTimeout(safeCallback, 2500);
-    } else {
-      safeCallback();
+  useEffect(() => {
+    // Check if intro was already seen this session
+    const introSeen = sessionStorage.getItem('scrambl_intro_seen');
+    if (introSeen) {
+      setShowIntro(false);
     }
+  }, []);
+
+  const handleIntroFinish = () => {
+    setShowIntro(false);
+    sessionStorage.setItem('scrambl_intro_seen', 'true');
   };
 
-  const advanceLevel = () => {
-    const nextLevelIndex = levelIndex + 1;
-    const processAdvance = () => {
-      if (nextLevelIndex < campaignData.length) {
-        setLevelIndex(nextLevelIndex);
-      } else {
-        // Technically this shouldn't be hit because button hides, but safety first
-        setLevelIndex(nextLevelIndex);
-      }
-    };
-    
-    // Interstitial Ad every 3 levels (Gap of 2 levels)
-    if (nextLevelIndex > 0 && nextLevelIndex % 3 === 0) {
-      showInterstitialAd(processAdvance);
-    } else {
-      processAdvance();
+  // Achievement toast queue system
+  const triggerAchievementCheck = useCallback(() => {
+    const newlyUnlocked = checkAchievements();
+    if (newlyUnlocked.length > 0) {
+      setAchievementQueue(prev => [...prev, ...newlyUnlocked]);
     }
-  };
+  }, []);
 
-  // Game Completed State
-  if (!levelData) {
-    return (
-      <div className="app-container">
-        <div className="glass-panel" style={{textAlign: 'center'}}>
-          <h1 className="title">SCRAMBL</h1>
-          <h2 style={{marginTop: '20px', color: 'var(--success-color)', fontSize: '2rem'}}>You've unscrambled the whole world! 🤯</h2>
-          <p style={{marginTop: '15px', color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: '1.5'}}>
-            Wow. We are currently cooking up more puzzles in the kitchen. We'll be back soon!
-          </p>
-          <button className="btn btn-primary" onClick={() => setLevelIndex(0)} style={{marginTop: '30px'}}>
-            Play Again from Start
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const showRewardedAd = () => {
-    const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    if (isDev) {
-      setTimeout(() => grantHint(), 1500);
-      return;
+  useEffect(() => {
+    if (!currentAchievement && achievementQueue.length > 0) {
+      setCurrentAchievement(achievementQueue[0]);
+      setAchievementQueue(prev => prev.slice(1));
     }
+  }, [currentAchievement, achievementQueue]);
 
-    if (window.adsbygoogle) {
-      window.adsbygoogle.push({
-        google_ad_client: "ca-pub-4173109231628867",
-         
-        type: "rewarded",
-        name: "get_hint",
-        beforeReward: (showAdFn) => showAdFn(),
-        adViewed: () => grantHint()
-      });
-    }
-  };
+  const handleAchievementDone = useCallback(() => {
+    setCurrentAchievement(null);
+  }, []);
 
-  const grantHint = () => {
-    const emptyIndices = metaGuess.map((g, idx) => g === '' ? idx : null).filter(idx => idx !== null);
-    if (emptyIndices.length > 0) {
-      const randomIdx = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
-      const newGuess = [...metaGuess];
-      newGuess[randomIdx] = levelData.puzzle.meta.answer[randomIdx];
-      setMetaGuess(newGuess);
-    }
-  };
+  if (loading) return <div className="loading-screen">Loading SCRAMBL...</div>;
 
   return (
-    <div className="app-container">
-      <h1 className="title">SCRAMBL</h1>
-      <div className="level-indicator">
-        {levelData.countryName} - Level {levelIndex + 1}
-      </div>
+    <>
+      {showIntro && <IntroAnimation onFinish={handleIntroFinish} />}
       
-      {!showMeta ? (
-        <div className="jumbles-container">
-          {levelData.puzzle.jumbles.map((j, i) => (
-            <JumbleRow
-              key={`${levelIndex}-${i}`}
-              index={i}
-              jumbleData={j}
-              isSolved={solvedJumbles[i] !== null}
-              onSolve={handleJumbleSolve}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="glass-panel meta-panel animate-fade">
-          <p className="clue-text">{levelData.puzzle.meta.quote}</p>
-          <div className="meta-inputs">
-            {levelData.puzzle.meta.answer.split('').map((_, i) => (
-              <input
-                key={`meta-${levelIndex}-${i}`}
-                ref={el => metaInputsRef.current[i] = el}
-                type="text"
-                maxLength="1"
-                value={metaGuess[i]}
-                onChange={(e) => handleMetaChange(e.target.value, i)}
-                onKeyDown={(e) => handleMetaKeyDown(e, i)}
-                disabled={isMetaSolved}
-                className={`char-input large ${isMetaSolved ? 'success' : ''}`}
-              />
-            ))}
-          </div>
-          
-          <div className="available-letters">
-            {getCircledLetters().map((l, i) => (
-              <span key={i} className="letter-pill">{l}</span>
-            ))}
-          </div>
-          
-          {!isMetaSolved && (
-            <button className="hint-btn" onClick={showRewardedAd}>
-              🎁 GET HINT
-            </button>
-          )}
+      {/* Global Achievement Toast */}
+      <AchievementToast achievement={currentAchievement} onDone={handleAchievementDone} />
+      
+      {/* PWA Install Prompt */}
+      <InstallPrompt />
+      
+      <Routes>
+        <Route path="/" element={
+          <EntryScreen 
+            levelIndex={levelIndex}
+            levelData={levelData}
+            currentUser={currentUser}
+            onContinue={() => navigate('/play')}
+            onAuthClick={() => navigate('/login')}
+          />
+        } />
+        <Route path="/play" element={<Game onAchievementCheck={triggerAchievementCheck} />} />
+        <Route path="/daily" element={<Game isDaily={true} onAchievementCheck={triggerAchievementCheck} />} />
+        <Route path="/time-attack" element={<TimeAttack onAchievementCheck={triggerAchievementCheck} />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/achievements" element={<Achievements />} />
+        <Route path="/stats" element={<PlayerStats />} />
+        
+        {/* Authentication */}
+        <Route path="/login" element={!currentUser ? <Login /> : <Navigate to="/" />} />
+        <Route path="/signup" element={!currentUser ? <Signup /> : <Navigate to="/" />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
 
-          {isMetaSolved && (
-            <div className="victory-zone animate-fade">
-              <h2>PUZZLE SOLVED!</h2>
-              {levelIndex < campaignData.length ? (
-                <button className="btn btn-primary" onClick={advanceLevel}>
-                  Next Level
-                </button>
-              ) : null}
-            </div>
+        {/* Legal */}
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/delete-account" element={<DeleteAccount />} />
+
+        {/* Features */}
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/countries" element={<CountryNav />} />
+        <Route path="/blog" element={<Blog />} />
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+
+      {/* Global Web Bottom Ad */}
+      {isWeb && (
+        <div style={{ position: 'fixed', bottom: 0, left: 0, width: '100%', display: 'flex', justifyContent: 'center', background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', zIndex: 1000, padding: '4px 0', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          {windowWidth >= 768 ? (
+            <AdBanner dataKey="0e187c9adaf30e62c576ba9383c5d83c" width={728} height={90} />
+          ) : (
+            <AdBanner dataKey="c775086fc6aafa02000ff1d7a8ce2fd3" width={320} height={50} />
           )}
         </div>
       )}
-      
-      <Footer />
-      <StickyBanner />
-    </div>
+    </>
   );
 }
-
-const Footer = () => {
-  return (
-    <div className="game-footer">
-      <div className="footer-content">
-        <div className="footer-section">
-          <h3>About Scrambl</h3>
-          <p>
-            Welcome to Scrambl, the ultimate word puzzle adventure! Journey through 1,415 uniquely crafted levels across 25 beautiful countries. 
-            Test your vocabulary, unscramble challenging anagrams, and extract hidden letters to solve the final mystery word of each level. 
-            Whether you are exploring the Australian outback or the historical cities of Europe, Scrambl offers a daily dose of brain-training fun.
-          </p>
-        </div>
-        <div className="footer-section">
-          <h3>How to Play</h3>
-          <p>
-            1. Unscramble the letters in the main puzzle rows to form valid English words.<br/>
-            2. Notice the circled spaces? The letters that land there are your key!<br/>
-            3. Collect all the circled letters from the solved jumbles and unscramble them one last time to answer the country-specific trivia question.<br/>
-            4. Use the "Get Hint" button if you get stuck!
-          </p>
-        </div>
-        <div className="footer-section">
-          <h3>Legal & Privacy</h3>
-          <p>
-            By playing Scrambl, you agree to our Terms of Service and Privacy Policy. We use third-party advertising companies, including Google AdSense, to serve ads when you visit our website. These companies may use aggregated information (not including your name, address, email address or telephone number) about your visits to this and other websites in order to provide advertisements about goods and services of interest to you.
-          </p>
-          <div className="footer-links">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Contact Us: support@wordscrambl.com</a>
-          </div>
-        </div>
-      </div>
-      <div className="footer-copyright">
-        © {new Date().getFullYear()} Scrambl Game. All rights reserved.
-      </div>
-    </div>
-  );
-};
 
 export default App;

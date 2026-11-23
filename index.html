@@ -2,30 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/png" href="/word_scrambl_logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SCRAMBL | The Best Word Game</title>
     
     <!-- Social Sharing Meta Tags -->
     <meta name="description" content="Unscramble the jumbles and solve the final mystery! The most exciting word game.">
+    <meta name="google-site-verification" content="kCC3d6hGEAz6nSfFaJ1khzVqCHXQOpiXxH6Uz54CKo4" />
     
     <!-- Open Graph / Meta -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="http://localhost:5174/">
+    <meta property="og:url" content="https://wordscrambl.com/">
     <meta property="og:title" content="SCRAMBL | Can you solve the mystery?">
     <meta property="og:description" content="I just solved today's SCRAMBL! Unscramble jumbled words and win. Play now!">
     <meta property="og:image" content="/scrambl-social.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="http://localhost:5174/">
+    <meta property="twitter:url" content="https://wordscrambl.com/">
     <meta property="twitter:title" content="SCRAMBL | The Best Word Game">
     <meta property="twitter:description" content="Unscramble the jumbles and solve the final mystery! The most exciting word game.">
     <meta property="twitter:image" content="/scrambl-social.png">
+    <!-- MONETAG_PLACEHOLDER -->
+    <!-- CRAZYGAMES_SDK_PLACEHOLDER -->
+    <!-- ADSENSE_START -->
     <!-- AdSense / GPT Infrastructure -->
     <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4173109231628867" crossorigin="anonymous"></script>
-    
     <script>
       window.adsbygoogle = window.adsbygoogle || [];
       window.googletag = window.googletag || {cmd: []};
@@ -37,6 +40,7 @@
         overlays: {google_ad_client: "ca-pub-4173109231628867"}
       });
     </script>
+    <!-- ADSENSE_END -->
   </head>
   <body>
     <noscript>
@@ -47,6 +51,12 @@
           Test your vocabulary, unscramble challenging anagrams, and extract hidden letters to solve the final mystery word of each level. 
           Whether you are exploring the Australian outback or the historical cities of Europe, Scrambl offers a daily dose of brain-training fun.
         </p>
+        <h2>Learn More</h2>
+        <ul>
+          <li><a href="/blog/">Word Blog</a></li>
+          <li><a href="/about.html">About Scrambl</a></li>
+          <li><a href="/how-to-play.html">How to Play</a></li>
+        </ul>
         <h2>How to Play</h2>
         <p>Unscramble the letters in the main puzzle rows to form valid English words. Notice the circled spaces? The letters that land there are your key! Collect all the circled letters from the solved jumbles and unscramble them one last time to answer the country-specific trivia question.</p>
         <h2>Privacy Policy</h2>
@@ -55,5 +65,16 @@
     </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <!-- WEB_ONLY_START (stripped from Android/portal builds: service worker with Monetag push + Adsterra scripts) -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
+    <script src="https://pl30928645.effectivecpmnetwork.com/de/4a/90/de4a9048995ba2b50965c91e2aeff7a6.js"></script>
+    <script src="https://pl30928729.effectivecpmnetwork.com/37/49/d4/3749d4f5128363b21b6194d9d57660e8.js"></script>
+    <!-- WEB_ONLY_END -->
   </body>
 </html>

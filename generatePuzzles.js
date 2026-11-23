@@ -2,31 +2,66 @@ import fs from 'fs';
 import https from 'https';
 
 const COUNTRIES = [
-  { id: 'australia', name: 'Australia', count: 20 },
-  { id: 'egypt', name: 'Egypt', count: 20 },
-  { id: 'mexico', name: 'Mexico', count: 25 },
-  { id: 'uk', name: 'United Kingdom', count: 30 },
-  { id: 'germany', name: 'Germany', count: 30 },
-  { id: 'china', name: 'China', count: 35 },
-  { id: 'russia', name: 'Russia', count: 35 },
-  { id: 'ukraine', name: 'Ukraine', count: 40 },
-  { id: 'japan', name: 'Japan', count: 40 },
-  { id: 'southkorea', name: 'South Korea', count: 45 },
-  { id: 'indonesia', name: 'Indonesia', count: 50 },
-  { id: 'singapore', name: 'Singapore', count: 50 },
-  { id: 'india', name: 'India', count: 55 },
-  { id: 'canada', name: 'Canada', count: 55 },
-  { id: 'france', name: 'France', count: 60 },
-  { id: 'spain', name: 'Spain', count: 60 },
-  { id: 'italy', name: 'Italy', count: 65 },
-  { id: 'southafrica', name: 'South Africa', count: 65 },
-  { id: 'malaysia', name: 'Malaysia', count: 70 },
-  { id: 'vietnam', name: 'Vietnam', count: 70 },
-  { id: 'thailand', name: 'Thailand', count: 75 },
-  { id: 'saudiarabia', name: 'Saudi Arabia', count: 75 },
-  { id: 'uae', name: 'UAE', count: 80 },
-  { id: 'qatar', name: 'Qatar', count: 80 },
-  { id: 'poland', name: 'Poland', count: 85 }
+  { id: 'australia', name: 'Australia', count: 24 },
+  { id: 'egypt', name: 'Egypt', count: 24 },
+  { id: 'mexico', name: 'Mexico', count: 24 },
+  { id: 'uk', name: 'United Kingdom', count: 24 },
+  { id: 'germany', name: 'Germany', count: 24 },
+  { id: 'china', name: 'China', count: 24 },
+  { id: 'russia', name: 'Russia', count: 24 },
+  { id: 'ukraine', name: 'Ukraine', count: 24 },
+  { id: 'japan', name: 'Japan', count: 24 },
+  { id: 'southkorea', name: 'South Korea', count: 24 },
+  { id: 'indonesia', name: 'Indonesia', count: 24 },
+  { id: 'singapore', name: 'Singapore', count: 24 },
+  { id: 'india', name: 'India', count: 24 },
+  { id: 'canada', name: 'Canada', count: 24 },
+  { id: 'france', name: 'France', count: 24 },
+  { id: 'spain', name: 'Spain', count: 24 },
+  { id: 'italy', name: 'Italy', count: 24 },
+  { id: 'southafrica', name: 'South Africa', count: 24 },
+  { id: 'malaysia', name: 'Malaysia', count: 24 },
+  { id: 'vietnam', name: 'Vietnam', count: 24 },
+  { id: 'thailand', name: 'Thailand', count: 24 },
+  { id: 'saudiarabia', name: 'Saudi Arabia', count: 24 },
+  { id: 'uae', name: 'UAE', count: 24 },
+  { id: 'qatar', name: 'Qatar', count: 24 },
+  { id: 'poland', name: 'Poland', count: 24 },
+  { id: 'brazil', name: 'Brazil', count: 24 },
+  { id: 'argentina', name: 'Argentina', count: 24 },
+  { id: 'chile', name: 'Chile', count: 24 },
+  { id: 'peru', name: 'Peru', count: 24 },
+  { id: 'colombia', name: 'Colombia', count: 24 },
+  { id: 'venezuela', name: 'Venezuela', count: 24 },
+  { id: 'morocco', name: 'Morocco', count: 24 },
+  { id: 'kenya', name: 'Kenya', count: 24 },
+  { id: 'nigeria', name: 'Nigeria', count: 24 },
+  { id: 'ethiopia', name: 'Ethiopia', count: 24 },
+  { id: 'tanzania', name: 'Tanzania', count: 24 },
+  { id: 'sweden', name: 'Sweden', count: 24 },
+  { id: 'norway', name: 'Norway', count: 24 },
+  { id: 'denmark', name: 'Denmark', count: 24 },
+  { id: 'finland', name: 'Finland', count: 24 },
+  { id: 'netherlands', name: 'Netherlands', count: 24 },
+  { id: 'belgium', name: 'Belgium', count: 24 },
+  { id: 'switzerland', name: 'Switzerland', count: 24 },
+  { id: 'austria', name: 'Austria', count: 24 },
+  { id: 'greece', name: 'Greece', count: 24 },
+  { id: 'turkey', name: 'Turkey', count: 24 },
+  { id: 'portugal', name: 'Portugal', count: 24 },
+  { id: 'ireland', name: 'Ireland', count: 24 },
+  { id: 'newzealand', name: 'New Zealand', count: 24 },
+  { id: 'fiji', name: 'Fiji', count: 24 },
+  { id: 'philippines', name: 'Philippines', count: 25 },
+  { id: 'pakistan', name: 'Pakistan', count: 25 },
+  { id: 'bangladesh', name: 'Bangladesh', count: 25 },
+  { id: 'srilanka', name: 'Sri Lanka', count: 25 },
+  { id: 'nepal', name: 'Nepal', count: 25 },
+  { id: 'myanmar', name: 'Myanmar', count: 25 },
+  { id: 'cambodia', name: 'Cambodia', count: 25 },
+  { id: 'laos', name: 'Laos', count: 25 },
+  { id: 'mongolia', name: 'Mongolia', count: 25 },
+  { id: 'kazakhstan', name: 'Kazakhstan', count: 26 }
 ];
 
 async function fetchWords() {
@@ -52,14 +87,14 @@ function scramble(word) {
     return arr.join('').toUpperCase();
 }
 
-function findJumbleWord(fiveLetterWords, neededLetters) {
+function findJumbleWord(fourLetterWords, neededLetters) {
     // Try to find a word that contains as many needed letters as possible
     // To ensure puzzle is solvable and circles are distributed
     let bestWord = "";
     let bestIntersections = [];
     
     // Randomize word pool slightly
-    let pool = [...fiveLetterWords].sort(() => 0.5 - Math.random()).slice(0, 1000);
+    let pool = [...fourLetterWords].sort(() => 0.5 - Math.random()).slice(0, 1000);
     
     for (let word of pool) {
         let tempNeeded = [...neededLetters];
@@ -90,10 +125,10 @@ function findJumbleWord(fiveLetterWords, neededLetters) {
 async function generate() {
     console.log("Fetching words...");
     const words = await fetchWords();
-    const fiveLetterWords = words.filter(w => w.length === 5);
-    const metaWords = words.filter(w => w.length >= 5 && w.length <= 7).sort(() => 0.5 - Math.random());
+    const fourLetterWords = words.filter(w => w.length === 4);
+    const metaWords = words.filter(w => w.length >= 4 && w.length <= 5).sort(() => 0.5 - Math.random());
     
-    console.log(`Found ${fiveLetterWords.length} 5-letter words and ${metaWords.length} meta words.`);
+    console.log(`Found ${fourLetterWords.length} 4-letter words and ${metaWords.length} meta words.`);
 
     let output = `export const campaignData = [\n`;
     let globalLevel = 0;
@@ -110,11 +145,11 @@ async function generate() {
     countryName: 'Australia',
     puzzle: {
         jumbles: [
-            { jumble: 'KASRT', answer: 'STARK', circles: [0] },
-            { jumble: 'LADYI', answer: 'DAILY', circles: [0, 4] },
-            { jumble: 'ENOMY', answer: 'MONEY', circles: [2, 3, 4] }
+            { jumble: 'RATS', answer: 'STAR', circles: [0, 3] },
+            { jumble: 'MCOE', answer: 'COME', circles: [1] },
+            { jumble: 'WODR', answer: 'WORD', circles: [0, 3] }
         ],
-        meta: { quote: "A landmark in the Southern Hemisphere?", answer: "SYDNEY" }
+        meta: { quote: "Unscramble the secret word!", answer: "SWORD" }
     }
   },\n`;
                 globalLevel++;
@@ -132,7 +167,7 @@ async function generate() {
                 let failsafe = 0;
                 
                 while (needed.length > 0 && failsafe < 10) {
-                    let jumble = findJumbleWord(fiveLetterWords, needed);
+                    let jumble = findJumbleWord(fourLetterWords, needed);
                     if (!jumble) {
                         failsafe = 10; break;
                     }

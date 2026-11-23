@@ -1,0 +1,94 @@
+.install-prompt {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #1a5d1a 0%, #2e7d32 100%);
+  border-radius: 16px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  z-index: 9000;
+  width: calc(100% - 40px);
+  max-width: 460px;
+  box-shadow: 0 10px 40px rgba(26, 93, 26, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  color: white;
+}
+
+.install-prompt-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.install-prompt-icon {
+  width: 42px;
+  height: 42px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.install-prompt-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.install-prompt-text strong {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.install-prompt-text span {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.install-prompt-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.install-btn {
+  background: white;
+  color: #1a5d1a;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.install-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dismiss-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background 0.2s ease;
+}
+
+.dismiss-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}

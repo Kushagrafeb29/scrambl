@@ -1,0 +1,8 @@
+{
+  "appId": "com.wordscrambl.app",
+  "appName": "Scrambl",
+  "webDir": "dist_production",
+  "server": {
+    "androidScheme": "https"
+  }
+}

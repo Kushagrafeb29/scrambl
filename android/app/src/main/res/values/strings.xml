@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Word Scrambl</string>
+    <string name="title_activity_main">Word Scrambl</string>
+    <string name="package_name">com.wordscrambl.app</string>
+    <string name="custom_url_scheme">com.wordscrambl.app</string>
+</resources>

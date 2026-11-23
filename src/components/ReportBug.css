@@ -1,0 +1,139 @@
+.bug-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 11000;
+  padding: 20px;
+}
+
+.bug-modal {
+  background: #16213e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  width: 100%;
+  max-width: 500px;
+  padding: 40px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+}
+
+.bug-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.bug-header h2 {
+  font-size: 1.8rem;
+  margin: 0;
+}
+
+.bug-icon {
+  color: #ff4757;
+}
+
+.bug-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.bug-intro {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
+  margin-bottom: 5px;
+}
+
+.bug-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bug-input-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+}
+
+.bug-input-group textarea,
+.bug-input-group input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  border-radius: 12px;
+  color: white;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.bug-input-group textarea:focus,
+.bug-input-group input:focus {
+  border-color: #00d2ff;
+}
+
+.bug-input-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.bug-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.btn-cancel {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 25px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.btn-submit {
+  background: #ff4757;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: #ff6b81;
+  transform: translateY(-2px);
+}
+
+.bug-success {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.bug-success p {
+  margin-top: 20px;
+  font-size: 1.1rem;
+}
+
+.bug-error {
+  color: #ff4757;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
