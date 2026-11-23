@@ -16,7 +16,7 @@ const Achievements = () => {
   return (
     <div className="app-container">
       <Helmet>
-        <title>Achievements | SCRAMBL</title>
+        <title>Achievements | Word Scrambl</title>
         <meta name="description" content="View your unlocked achievements and track your progress in Scrambl!" />
       </Helmet>
 

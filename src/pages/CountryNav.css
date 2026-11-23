@@ -1,0 +1,77 @@
+.map-page { padding-bottom: 32px; }
+
+.map-topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0; margin-bottom: 16px;
+  background: color-mix(in srgb, var(--bg-color) 92%, transparent);
+  backdrop-filter: blur(8px);
+}
+.map-topbar h1 { font-size: 1.25rem; font-weight: 800; color: var(--text-primary); letter-spacing: -0.01em; }
+
+.icon-btn {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--surface-color); border: 1px solid var(--border-color);
+  color: var(--text-primary); cursor: pointer;
+}
+.icon-btn.ghost { visibility: hidden; }
+
+.map-hero {
+  display: flex; gap: 14px; align-items: center;
+  padding: 18px; margin-bottom: 18px; border-radius: 20px;
+  background: linear-gradient(135deg, #1a5d1a 0%, #2e7d32 60%, #3f9142 100%);
+  color: #fff; box-shadow: 0 12px 28px rgba(26, 93, 26, 0.25);
+}
+.map-hero > div { flex: 1; }
+.map-hero-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 8px; }
+.map-hero-sub { font-size: 0.8rem; opacity: 0.85; margin-top: 8px; }
+.map-hero .progress-track { background: rgba(255,255,255,0.25); }
+.map-hero .progress-fill { background: #fbbf24; }
+
+.progress-track { display: block; height: 8px; border-radius: 999px; background: #e8eef3; overflow: hidden; }
+.progress-track.small { height: 5px; margin-top: 8px; }
+.progress-fill { display: block; height: 100%; border-radius: inherit; background: var(--primary-color); transition: width .4s ease; }
+
+.country-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+.country-card {
+  position: relative; border-radius: 18px; overflow: hidden;
+  background: var(--surface-color); border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px var(--shadow-color);
+}
+.country-card::before {
+  /* painted backdrop (when one exists), faded behind the content */
+  content: ''; position: absolute; inset: 0;
+  background-image: var(--card-bg, none); background-size: cover; background-position: center;
+  opacity: .18;
+}
+.country-card.is-current { border: 2px solid var(--primary-color); box-shadow: 0 8px 24px rgba(26,93,26,.18); }
+.country-card.is-current::before { opacity: .3; }
+.country-card.is-locked { background: #f4f6f8; }
+.country-card.is-locked::before { filter: grayscale(1); opacity: .08; }
+
+.country-hit {
+  position: relative; width: 100%; display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; background: none; border: 0; text-align: left;
+  font: inherit; color: inherit; cursor: pointer;
+}
+.country-hit:disabled { cursor: default; }
+.country-hit:focus-visible { outline: 3px solid #fbbf24; outline-offset: -3px; border-radius: 18px; }
+
+.country-index { font-size: .72rem; font-weight: 800; color: var(--text-secondary); width: 20px; font-variant-numeric: tabular-nums; }
+.country-flag { font-size: 1.9rem; line-height: 1; }
+.is-locked .country-flag { filter: grayscale(1); opacity: .5; }
+.country-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.country-name { font-weight: 800; font-size: 1.02rem; color: var(--text-primary); }
+.is-locked .country-name { color: #8a94a0; }
+.country-meta { font-size: .76rem; color: var(--text-secondary); margin-top: 2px; }
+
+.country-action {
+  display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+  font-weight: 800; font-size: .8rem; color: #94a3b8;
+}
+.is-done .country-action { color: var(--success-color); }
+.is-current .country-action, .country-card:not(.is-locked):not(.is-done) .country-action {
+  background: var(--primary-color); color: #fff; padding: 8px 12px; border-radius: 999px;
+}

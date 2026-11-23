@@ -80,7 +80,7 @@ const TimeAttack = ({ onAchievementCheck }) => {
               await setDoc(userRef, { timeAttackHighScore: score, displayName: currentUser.displayName || currentUser.email.split('@')[0] }, { merge: true });
             }
           } else {
-            await setDoc(userRef, { timeAttackHighScore: score, displayName: currentUser.displayName || currentUser.email.split('@')[0], email: currentUser.email }, { merge: true });
+            await setDoc(userRef, { timeAttackHighScore: score, displayName: currentUser.displayName || currentUser.email.split('@')[0] }, { merge: true });
           }
         };
         saveScore();
@@ -196,13 +196,13 @@ const TimeAttack = ({ onAchievementCheck }) => {
       background: 'transparent'
     }}>
       <Helmet>
-        <title>Time Attack | SCRAMBL</title>
+        <title>Time Attack | Word Scrambl</title>
       </Helmet>
 
       <Confetti active={showConfetti} />
 
       {/* Header — matches Daily Challenge */}
-      <h1 className="title" style={{ color: '#2a9d8f', marginTop: '20px' }}>SCRAMBL</h1>
+      <h1 className="title" style={{ color: '#2a9d8f', marginTop: '20px' }}>Word Scrambl</h1>
       <div className="level-indicator" style={{ color: 'rgba(255,255,255,0.6)' }}>
         <Zap size={16} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }} />
         TIME ATTACK

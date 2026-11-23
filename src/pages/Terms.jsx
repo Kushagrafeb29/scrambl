@@ -14,7 +14,7 @@ const Terms = () => {
         
         <section>
           <h2>1. Acceptance of Terms</h2>
-          <p>By accessing or playing SCRAMBL, you agree to be bound by these Terms of Service. If you do not agree, please do not use the service.</p>
+          <p>By accessing or playing Word Scrambl, you agree to be bound by these Terms of Service. If you do not agree, please do not use the service.</p>
         </section>
 
         <section>
@@ -24,7 +24,7 @@ const Terms = () => {
 
         <section>
           <h2>3. Intellectual Property</h2>
-          <p>All game content, including puzzles, graphics, and animations, are the property of SCRAMBL and protected by copyright laws.</p>
+          <p>All game content, including puzzles, graphics, and animations, are the property of GoodDude Studios and protected by copyright laws.</p>
         </section>
 
         <section>
@@ -34,7 +34,7 @@ const Terms = () => {
 
         <section>
           <h2>5. Limitation of Liability</h2>
-          <p>SCRAMBL is provided "as is" without any warranties. We are not liable for any damages arising from your use of the game.</p>
+          <p>Word Scrambl is provided "as is" without any warranties. We are not liable for any damages arising from your use of the game.</p>
         </section>
       </div>
     </div>

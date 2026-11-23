@@ -105,7 +105,7 @@ function App() {
     setCurrentAchievement(null);
   }, []);
 
-  if (loading) return <div className="loading-screen">Loading SCRAMBL...</div>;
+  if (loading) return <div className="loading-screen">Loading Word Scrambl…</div>;
 
   return (
     <>

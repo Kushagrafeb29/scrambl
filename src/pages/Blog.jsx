@@ -15,7 +15,7 @@ const blogPosts = [
   },
   {
     title: '10 Tips to Become a Word Scramble Master',
-    excerpt: 'Expert strategies to unscramble words faster and boost your score in SCRAMBL.',
+    excerpt: 'Expert strategies to unscramble words faster and boost your score in Word Scrambl.',
     category: 'Strategy',
     date: 'June 8, 2026',
     readTime: 5,
@@ -65,8 +65,8 @@ const Blog = () => {
       paddingBottom: '80px',
     }}>
       <Helmet>
-        <title>Word Blog | SCRAMBL</title>
-        <meta name="description" content="Explore word origins, puzzle strategies, and vocabulary tips from the SCRAMBL word game." />
+        <title>Word Blog | Word Scrambl</title>
+        <meta name="description" content="Explore word origins, puzzle strategies, and vocabulary tips from the Word Scrambl word game." />
       </Helmet>
 
       <div style={{ maxWidth: '500px', margin: '0 auto' }}>

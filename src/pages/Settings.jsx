@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Volume2, VolumeX, Music, Settings as SettingsIcon, Trash2, RotateCcw, Info } from 'lucide-react';
 import { toggleBGM } from '../utils/audio';
 import DeleteAccountSection from '../components/DeleteAccountSection';
+import ReportBug from '../components/ReportBug';
 import '../App.css';
 
 const Settings = () => {
@@ -10,6 +11,7 @@ const Settings = () => {
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem('scrambl_sound_enabled') !== 'false');
   const [musicEnabled, setMusicEnabled] = useState(() => localStorage.getItem('scrambl_music_enabled') !== 'false');
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showBugReport, setShowBugReport] = useState(false);
 
   const handleToggleSound = () => {
     const newState = !soundEnabled;
@@ -90,6 +92,8 @@ const Settings = () => {
         
         <button className="btn btn-secondary" onClick={() => navigate('/privacy')}>Privacy Policy</button>
         <button className="btn btn-secondary" onClick={() => navigate('/terms')}>Terms of Service</button>
+        <button className="btn btn-secondary" onClick={() => setShowBugReport(true)}>Report a Bug</button>
+        {showBugReport && <ReportBug onClose={() => setShowBugReport(false)} />}
 
         <hr style={{ borderColor: 'var(--border-color)', margin: '10px 0' }} />
 
@@ -149,7 +153,7 @@ const Settings = () => {
           opacity: 0.6
         }}>
           <Info size={12} />
-          Scrambl v2.1.0 • Built by GoodDude Studios
+          Word Scrambl v1.0.4 • © GoodDude Studios
         </div>
       </div>
     </div>

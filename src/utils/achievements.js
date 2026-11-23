@@ -9,15 +9,15 @@ export const ACHIEVEMENTS = [
   {
     id: 'first_blood',
     icon: '🏅',
-    name: 'First Blood',
+    name: 'First Steps',
     description: 'Complete your first level',
     condition: (stats) => stats.levelsCompleted >= 1,
   },
   {
     id: 'globe_trotter',
-    icon: '🌍',
-    name: 'Globe Trotter',
-    description: 'Complete 10 countries',
+    icon: '🧭',
+    name: 'Explorer',
+    description: 'Complete 10 levels',
     condition: (stats) => stats.levelsCompleted >= 10,
   },
   {
@@ -29,15 +29,15 @@ export const ACHIEVEMENTS = [
   },
   {
     id: 'world_champion',
-    icon: '👑',
-    name: 'World Champion',
+    icon: '🌍',
+    name: 'Globe Trotter',
     description: 'Complete 100 levels',
     condition: (stats) => stats.levelsCompleted >= 100,
   },
   {
     id: 'diamond_player',
-    icon: '💎',
-    name: 'Diamond Player',
+    icon: '👑',
+    name: 'World Champion',
     description: 'Complete 200 levels',
     condition: (stats) => stats.levelsCompleted >= 200,
   },
@@ -58,7 +58,7 @@ export const ACHIEVEMENTS = [
   {
     id: 'speed_demon',
     icon: '⚡',
-    name: 'Speed Demon',
+    name: 'Quick Thinker',
     description: 'Score 10+ in Time Attack',
     condition: (stats) => stats.timeAttackBest >= 10,
   },

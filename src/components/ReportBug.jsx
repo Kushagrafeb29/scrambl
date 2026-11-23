@@ -43,7 +43,7 @@ const ReportBug = ({ onClose }) => {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="bug-form">
-            <p className="bug-intro">Help us improve SCRAMBL. Let us know what's broken!</p>
+            <p className="bug-intro">Help us improve Word Scrambl. Let us know what's broken!</p>
             
             <div className="bug-input-group">
               <label>What's the issue?</label>

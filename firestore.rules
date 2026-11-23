@@ -1,0 +1,23 @@
+rules_version = '2';
+// Word Scrambl security rules.
+// - users/{uid}: public leaderboard data (display name + scores). Anyone can read; only the
+//   signed-in owner can write their own doc, only these fields, with sane values. Owner can delete (account deletion).
+// - bugs/{id}: anyone can file a bug report; nobody can read them from the client.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid} {
+      allow read: if true;
+      allow delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['displayName', 'campaignLevel', 'timeAttackHighScore'])
+        && (!('displayName' in request.resource.data) || (request.resource.data.displayName is string && request.resource.data.displayName.size() <= 40))
+        && (!('campaignLevel' in request.resource.data) || (request.resource.data.campaignLevel is int && request.resource.data.campaignLevel >= 0 && request.resource.data.campaignLevel <= 2000))
+        && (!('timeAttackHighScore' in request.resource.data) || (request.resource.data.timeAttackHighScore is int && request.resource.data.timeAttackHighScore >= 0 && request.resource.data.timeAttackHighScore <= 500));
+    }
+    match /bugs/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['email', 'description', 'timestamp', 'userAgent', 'page'])
+        && request.resource.data.description is string && request.resource.data.description.size() <= 2000;
+      allow read, update, delete: if false;
+    }
+  }
+}

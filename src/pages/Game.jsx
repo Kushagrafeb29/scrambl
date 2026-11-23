@@ -22,6 +22,7 @@ import '../App.css';
 // StickyBanner removed for Monetag integration
 
 import { WEB_ADS_ENABLED } from '../utils/buildTarget';
+import { countryForLevel, flagOf } from '../utils/countries';
 
 // Adsterra smartlink: website only. Compiled out of Android (AdMob-only) and portal builds.
 const SMARTLINK_URL = WEB_ADS_ENABLED ? "https://www.effectivecpmnetwork.com/cubvc6j8?key=b4a745e0a1cd15fc948537eb585d9f31" : null;
@@ -241,7 +242,7 @@ function Game({ isDaily = false, onAchievementCheck }) {
             .then(data => {
               if (data && data.length > 0 && data[0].meanings.length > 0) {
                 const meaning = data[0].meanings[0];
-                const definition = meaning.definitions[0].definition;
+                const definition = meaning.definitions[0].definition.trim().replace(/[:;,]$/, '.');
                 setMetaHint(`Hint: ${definition}`);
                 // Store full definition for post-solve display
                 setWordDefinition({
@@ -446,11 +447,11 @@ function Game({ isDaily = false, onAchievementCheck }) {
     return (
       <div className="app-container">
         <Helmet>
-          <title>{`Victory! | SCRAMBL`}</title>
+          <title>{`World complete! | Word Scrambl`}</title>
         </Helmet>
         <div className="glass-panel" style={{textAlign: 'center'}}>
           <Trophy size={64} color="var(--success-color)" style={{marginBottom: '20px'}} />
-          <h1 className="title">SCRAMBL</h1>
+          <h1 className="title">Word Scrambl</h1>
           <h2 style={{marginTop: '20px', color: 'var(--success-color)', fontSize: '2rem'}}>You've unscrambled the whole world! 🤯</h2>
           <p style={{marginTop: '15px', color: 'var(--text-secondary)', fontSize: '1.2rem'}}>
             Wow. We are currently cooking up more puzzles in the kitchen. We'll be back soon!
@@ -524,7 +525,7 @@ function Game({ isDaily = false, onAchievementCheck }) {
   return (
     <div className={`app-container ${isTutorialActive ? 'tutorial-active' : ''}`}>
       <Helmet>
-        <title>{`${levelData.countryName} - Level ${levelIndex + 1} | SCRAMBL`}</title>
+        <title>{`${levelData.countryName} – Level ${levelIndex + 1} | Word Scrambl`}</title>
         <meta name="description" content={`Unscramble words from ${levelData.countryName} and solve the meta-puzzle!`} />
       </Helmet>
 
@@ -552,9 +553,10 @@ function Game({ isDaily = false, onAchievementCheck }) {
         </button>
       </div>
 
-      <h1 className="title" style={{marginTop: '40px'}}>SCRAMBL</h1>
-      <div className="level-indicator">
-        {levelData.countryName} - Level {levelIndex + 1}
+      <div className="game-heading">
+        <p className="game-kicker">{isDaily ? 'Daily Puzzle' : `Level ${levelIndex + 1} of ${campaignData.length}`}</p>
+        <h1 className="game-country"><span aria-hidden="true">{flagOf(countryForLevel(levelIndex))}</span> {levelData.countryName}</h1>
+        <p className="game-instruction">{showMeta ? 'Use the circled letters to solve the riddle' : 'Unscramble each word. Circled letters build the final answer.'}</p>
       </div>
       
       {!showMeta ? (
@@ -602,33 +604,32 @@ function Game({ isDaily = false, onAchievementCheck }) {
           )}
 
           {isMetaSolved && (
-            <div className="victory-zone animate-fade" style={{ textAlign: 'center', padding: '20px 10px' }}>
-              <h2 style={{ fontSize: '2rem', color: '#10b981', marginBottom: '10px' }}>IQ TEST PASSED! 🧠</h2>
-              <p style={{ fontSize: '1.1rem', fontWeight: 'bold', marginBottom: '25px', color: 'var(--text-color)' }}>
-                Congratulations! You scored in the top 1% and qualify for a FREE McDonald's Meal! 🍔
-              </p>
-              
-              <button 
-                className="btn btn-primary" 
-                onClick={() => window.location.href = 'https://www.mobilerewards.link/view.php?id=5546431&pub=3358108'}
-                style={{ 
-                  fontSize: '1.3rem', 
-                  padding: '18px', 
-                  background: 'linear-gradient(135deg, #f59e0b, #ef4444)',
-                  boxShadow: '0 4px 15px rgba(239, 68, 68, 0.4)',
-                  animation: 'pulse 1.5s infinite',
-                  width: '100%'
-                }}
-              >
-                🎁 CLAIM PRIZE NOW
+            <div className="victory-card animate-fade">
+              <p className="victory-kicker">{isDaily ? 'Daily Puzzle solved' : `${levelData.countryName} · Level ${levelIndex + 1}`}</p>
+              <h2 className="victory-title">Brilliant! 🎉</h2>
+              <p className="victory-answer">The answer was <strong>{metaAnswer}</strong></p>
+
+              {wordDefinition && (
+                <div className="victory-definition">
+                  <p className="victory-word">
+                    {wordDefinition.word.toLowerCase()}
+                    {wordDefinition.phonetic && <span> {wordDefinition.phonetic}</span>}
+                    {wordDefinition.partOfSpeech && <em> · {wordDefinition.partOfSpeech}</em>}
+                  </p>
+                  <p>{wordDefinition.definition}</p>
+                </div>
+              )}
+
+              <p className="victory-reward">🪙 +{isDaily ? 5 : 2} coins</p>
+
+              {isDaily && (
+                <button className="btn btn-secondary share-btn-daily" onClick={handleShare} style={{ width: '100%', marginBottom: '10px' }}>
+                  📋 Share Results
+                </button>
+              )}
+              <button className="btn btn-primary victory-next" onClick={advanceLevel}>
+                {isDaily ? 'Collect & Return Home' : 'Next Level'} <ChevronRight size={20} />
               </button>
-              <style>{`
-                @keyframes pulse {
-                  0% { transform: scale(1); }
-                  50% { transform: scale(1.05); }
-                  100% { transform: scale(1); }
-                }
-              `}</style>
             </div>
           )}
         </div>

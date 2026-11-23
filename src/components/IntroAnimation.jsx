@@ -39,13 +39,14 @@ const IntroAnimation = ({ onFinish }) => {
   const [phase, setPhase] = useState(1);
 
   useEffect(() => {
+    // Studio card ~1.7s, then the game title card; ~4s total, tap anywhere to skip
     const phaseTimer = setTimeout(() => {
       setPhase(2);
-    }, 2500);
+    }, 1700);
 
     const finishTimer = setTimeout(() => {
       onFinish();
-    }, 6000);
+    }, 4000);
 
     return () => {
       clearTimeout(phaseTimer);
@@ -54,7 +55,7 @@ const IntroAnimation = ({ onFinish }) => {
   }, [onFinish]);
 
   return (
-    <div className="intro-container">
+    <div className="intro-container" onClick={onFinish} role="button" aria-label="Skip intro">
       <AnimatePresence mode="wait">
         {phase === 1 && (
           <motion.div 
@@ -66,7 +67,7 @@ const IntroAnimation = ({ onFinish }) => {
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
             <img src="/gooddude_logo.png" alt="GoodDude Studios" className="company-logo" />
-            <h2 className="company-name">GoodDude Studios.</h2>
+            <p className="company-presents">presents</p>
           </motion.div>
         )}
         
@@ -81,22 +82,23 @@ const IntroAnimation = ({ onFinish }) => {
           >
             <img src="/word_scrambl_logo.png" alt="Word Scrambl Logo" className="game-logo" />
             <h1 className="intro-title">
-              <ScrambleText text="WORD SCRAMBL" duration={2500} />
+              <ScrambleText text="WORD SCRAMBL" duration={1400} />
             </h1>
             <motion.div 
               className="intro-loader"
               initial={{ width: 0 }}
               animate={{ width: '100%' }}
-              transition={{ duration: 2.5, delay: 0.5, ease: "easeInOut" }}
+              transition={{ duration: 1.6, delay: 0.2, ease: "easeInOut" }}
             />
             <motion.p 
               className="intro-subtitle"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 1 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
             >
               Unscramble the World
             </motion.p>
+            <p className="intro-skip">Tap to skip</p>
           </motion.div>
         )}
       </AnimatePresence>

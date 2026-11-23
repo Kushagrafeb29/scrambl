@@ -37,7 +37,7 @@ const PlayerStats = () => {
   return (
     <div className="stats-page">
       <Helmet>
-        <title>Player Stats | SCRAMBL</title>
+        <title>Player Stats | Word Scrambl</title>
         <meta name="description" content="View your Scrambl player statistics, progress, and session data." />
       </Helmet>
 

@@ -147,14 +147,8 @@ const Shop = () => {
         
         <h1 className="title">SUPPORT</h1>
         <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '30px' }}>
-          Help keep Scrambl free and ad-light!
+          Word Scrambl is made by a tiny indie studio. Enjoying it? You can chip in to keep new puzzles coming.
         </p>
-
-        {!billingReady && (
-        <p style={{ textAlign: 'center', color: '#FFD700', marginBottom: '20px' }}>
-          In-app purchases are coming soon. Watch a short video in-game for free hints!
-        </p>
-      )}
 
       <div className="shop-grid">
           <div className="shop-item glass-panel featured">
@@ -190,6 +184,12 @@ const Shop = () => {
       <p style={{ textAlign: 'center', color: 'var(--text-secondary)', marginBottom: '30px' }}>
         Power up your puzzle adventure!
       </p>
+
+      {!billingReady && (
+        <p style={{ textAlign: 'center', color: '#b45309', fontWeight: 600, marginBottom: '20px' }}>
+          In-app purchases are coming soon. Watch a short video in-game for free hints!
+        </p>
+      )}
 
       <div className="shop-grid">
         {/* Remove Ads - Featured */}

@@ -14,7 +14,7 @@ const DeleteAccount = () => {
   return (
     <div className="app-container">
       <Helmet>
-        <title>Delete Your Account | SCRAMBL</title>
+        <title>Delete Your Account | Word Scrambl</title>
         <meta name="description" content="How to delete your Word Scrambl account and associated data." />
       </Helmet>
       <div className="header-nav">

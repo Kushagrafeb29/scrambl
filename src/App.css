@@ -401,3 +401,22 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* ---------- Game heading ---------- */
+.game-heading { text-align: center; margin: 56px 0 20px; }
+.game-kicker { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-secondary); }
+.game-country { font-size: 2rem; font-weight: 900; letter-spacing: -0.02em; color: var(--primary-color); margin: 4px 0 6px; line-height: 1.1; }
+.game-instruction { font-size: 0.85rem; color: var(--text-secondary); max-width: 320px; margin: 0 auto; }
+
+/* ---------- Level complete card ---------- */
+.victory-card { text-align: center; padding: 20px 6px 6px; }
+.victory-kicker { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-secondary); }
+.victory-title { font-size: 2rem; font-weight: 900; color: var(--success-color); margin: 6px 0 4px; }
+.victory-answer { font-size: 1rem; color: var(--text-primary); margin-bottom: 14px; }
+.victory-answer strong { letter-spacing: 0.12em; color: var(--primary-color); }
+.victory-definition { text-align: left; background: #f4f8f4; border: 1px solid #dbe9db; border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; font-size: 0.9rem; color: #374151; line-height: 1.5; }
+.victory-word { font-weight: 800; color: var(--primary-color); margin-bottom: 4px; }
+.victory-word span { font-weight: 500; color: var(--text-secondary); }
+.victory-word em { font-weight: 500; color: var(--text-secondary); }
+.victory-reward { font-weight: 800; color: #b45309; margin-bottom: 14px; }
+.victory-next { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 1.1rem; padding: 16px; }

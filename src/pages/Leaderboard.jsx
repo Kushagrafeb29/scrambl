@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { Trophy, ChevronLeft, Timer, Map, Flame } from 'lucide-react';
+import { Trophy, ChevronLeft, Timer, Map as MapIcon, RefreshCw, WifiOff } from 'lucide-react';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import '../App.css';
 
 const MEDAL_EMOJIS = ['🥇', '🥈', '🥉'];
+
+// Firestore's getDocs can wait indefinitely when offline or when the database is unavailable,
+// so every leaderboard request is capped.
+const withTimeout = (promise, ms = 8000) => Promise.race([
+  promise,
+  new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms)),
+]);
 
 const Leaderboard = () => {
   const navigate = useNavigate();
@@ -16,13 +23,17 @@ const Leaderboard = () => {
   const [topCampaign, setTopCampaign] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('timeAttack');
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     const fetchLeaderboards = async () => {
+      setLoading(true);
+      setError(false);
       try {
         // Fetch Top Time Attack Scores
         const timeAttackQuery = query(collection(db, 'users'), orderBy('timeAttackHighScore', 'desc'), limit(50));
-        const timeAttackSnapshot = await getDocs(timeAttackQuery);
+        const timeAttackSnapshot = await withTimeout(getDocs(timeAttackQuery));
         const timeAttackData = [];
         timeAttackSnapshot.forEach((doc) => {
           if (doc.data().timeAttackHighScore > 0) {
@@ -33,7 +44,7 @@ const Leaderboard = () => {
 
         // Fetch Top Campaign Levels
         const campaignQuery = query(collection(db, 'users'), orderBy('campaignLevel', 'desc'), limit(50));
-        const campaignSnapshot = await getDocs(campaignQuery);
+        const campaignSnapshot = await withTimeout(getDocs(campaignQuery));
         const campaignData = [];
         campaignSnapshot.forEach((doc) => {
           if (doc.data().campaignLevel > 0) {
@@ -43,17 +54,18 @@ const Leaderboard = () => {
         setTopCampaign(campaignData);
       } catch (err) {
         console.error("Error fetching leaderboards:", err);
+        setError(true);
       } finally {
         setLoading(false);
       }
     };
 
     fetchLeaderboards();
-  }, []);
+  }, [reloadKey]);
 
   const tabs = [
     { id: 'timeAttack', label: 'Time Attack', icon: Timer },
-    { id: 'campaign', label: 'Campaign', icon: Map },
+    { id: 'campaign', label: 'Campaign', icon: MapIcon },
   ];
 
   const getData = () => {
@@ -84,7 +96,7 @@ const Leaderboard = () => {
   return (
     <div className="app-container">
       <Helmet>
-        <title>Global Leaderboard | SCRAMBL</title>
+        <title>Global Leaderboard | Word Scrambl</title>
       </Helmet>
 
       <div style={{ position: 'sticky', top: 0, background: 'var(--bg-color)', zIndex: 100, paddingTop: '15px', paddingBottom: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', borderBottom: '1px solid var(--border-color)' }}>
@@ -136,7 +148,16 @@ const Leaderboard = () => {
         <div style={{ padding: '16px' }}>
           {loading ? (
             <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
-              Loading Global Rankings...
+              Loading global rankings…
+            </div>
+          ) : error ? (
+            <div style={{ textAlign: 'center', padding: '36px 16px', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+              <WifiOff size={32} />
+              <strong style={{ color: 'var(--text-primary)' }}>Rankings are unavailable right now</strong>
+              <span style={{ fontSize: '0.85rem' }}>Check your connection and try again. Your own scores are safe on this device.</span>
+              <button className="btn btn-primary" onClick={() => setReloadKey(k => k + 1)} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                <RefreshCw size={16} /> Try again
+              </button>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -162,7 +183,7 @@ const Leaderboard = () => {
                       </span>
                       <div>
                         <span style={{ fontWeight: '600', color: 'var(--text-primary)', fontSize: '0.9rem' }}>
-                          {user.displayName || user.email?.split('@')[0] || 'Anonymous'}
+                          {user.displayName || 'Player'}
                         </span>
                         {isMe && <span style={{ fontSize: '0.7rem', color: 'var(--primary-color)', fontWeight: '700', marginLeft: '6px' }}>YOU</span>}
                       </div>
@@ -176,7 +197,7 @@ const Leaderboard = () => {
               
               {getData().length === 0 && (
                 <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
-                  No scores recorded yet. Be the first!
+                  No scores yet. Sign in and play {activeTab === 'timeAttack' ? 'Time Attack' : 'the Campaign'} to claim the #1 spot!
                 </div>
               )}
             </div>
