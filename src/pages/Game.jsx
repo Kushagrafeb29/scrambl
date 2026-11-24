@@ -14,7 +14,8 @@ import Confetti from '../components/Confetti';
 import { AdMob, BannerAdSize, BannerAdPosition, RewardAdPluginEvents } from '@capacitor-community/admob';
 
 // true only in the closed-testing build (npm run build:android:test) so testers see Google test ads
-const ADMOB_TESTING = import.meta.env.VITE_ADMOB_TESTING === 'true';
+import { AD_UNITS, IS_IOS, IOS_USING_TEST_UNITS } from '../utils/adUnits';
+const ADMOB_TESTING = import.meta.env.VITE_ADMOB_TESTING === 'true' || IOS_USING_TEST_UNITS;
 import { Capacitor } from '@capacitor/core';
 import { playPopSound, playSuccessChime, playVictorySound } from '../utils/audio';
 import '../App.css';
@@ -148,12 +149,14 @@ function Game({ isDaily = false, onAchievementCheck }) {
 
   useEffect(() => {
     if (Capacitor.isNativePlatform() && !isAdFree) {
-      AdMob.initialize({
+      // iOS 14.5+: ask for App Tracking Transparency before ads load (Apple requirement)
+      const ready = IS_IOS ? AdMob.requestTrackingAuthorization().catch(() => {}) : Promise.resolve();
+      ready.then(() => AdMob.initialize({
         initializeForTesting: ADMOB_TESTING,
-      }).then(async () => {
+      })).then(async () => {
         try {
           await AdMob.showBanner({
-            adId: 'ca-app-pub-4173109231628867/6076498960',
+            adId: AD_UNITS.banner,
             adSize: BannerAdSize.BANNER,
             position: BannerAdPosition.BOTTOM_CENTER,
             margin: 0,
@@ -335,7 +338,7 @@ function Game({ isDaily = false, onAchievementCheck }) {
     if (Capacitor.isNativePlatform()) {
       try {
         await AdMob.prepareInterstitial({
-           adId: 'ca-app-pub-4173109231628867/7253849260',
+           adId: AD_UNITS.interstitial,
            isTesting: ADMOB_TESTING
         });
         await AdMob.showInterstitial();
@@ -485,7 +488,7 @@ function Game({ isDaily = false, onAchievementCheck }) {
         );
 
         await AdMob.prepareRewardVideoAd({
-           adId: 'ca-app-pub-4173109231628867/9193616890',
+           adId: AD_UNITS.rewarded,
            isTesting: ADMOB_TESTING
         });
         

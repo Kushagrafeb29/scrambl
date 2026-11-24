@@ -1,0 +1,45 @@
+# Codemagic: builds Word Scrambl for iOS on a cloud Mac and uploads it to App Store Connect / TestFlight.
+# One-time setup (see ios_app_store_guide.md):
+#   1. Codemagic > Teams > Integrations > App Store Connect: add an API key and name it "WordScrambl ASC".
+#   2. Codemagic > add app from GitHub (Kushagrafeb29/scrambl), then Start new build > workflow "ios-release".
+workflows:
+  ios-release:
+    name: iOS App Store release
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: WordScrambl ASC
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.wordscrambl.app
+      vars:
+        APP_STORE_APPLE_ID: 0   # replace with the app's Apple ID (App Store Connect > App Information)
+      node: 20
+      xcode: latest
+    scripts:
+      - name: Install dependencies
+        script: npm ci
+      - name: Build web bundle (AdMob-only app build, no web ads)
+        script: npm run build:ios
+      - name: Sync Capacitor iOS project
+        script: npx cap sync ios
+      - name: Set up code signing
+        script: xcode-project use-profiles
+      - name: Set build number
+        script: |
+          cd ios/App
+          agvtool new-version -all $(( $(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 5) + 1 ))
+      - name: Build signed IPA
+        script: |
+          xcode-project build-ipa \
+            --project "ios/App/App.xcodeproj" \
+            --scheme "App"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false

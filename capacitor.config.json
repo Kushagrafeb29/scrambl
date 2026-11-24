@@ -1,8 +1,11 @@
 {
   "appId": "com.wordscrambl.app",
-  "appName": "Scrambl",
+  "appName": "Word Scrambl",
   "webDir": "dist_production",
   "server": {
     "androidScheme": "https"
+  },
+  "ios": {
+    "contentInset": "automatic"
   }
 }
