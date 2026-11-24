@@ -6,7 +6,7 @@ export const campaignData = [
     puzzle: {
         jumbles: [
             { jumble: 'RCA', answer: 'CAR', circles: [0] },
-            { jumble: 'EAT', answer: 'TEA', circles: [0, 1] }
+            { jumble: 'EAT', answer: 'TEA', circles: [0, 2] }
         ],
         meta: { quote: "Chases mice and says meow.", answer: "CAT" }
     }

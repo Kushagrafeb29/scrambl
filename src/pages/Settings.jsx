@@ -153,7 +153,7 @@ const Settings = () => {
           opacity: 0.6
         }}>
           <Info size={12} />
-          Word Scrambl v1.0.4 • © GoodDude Studios
+          Word Scrambl v1.0.5 • © GoodDude Studios
         </div>
       </div>
     </div>
